@@ -10,6 +10,10 @@ app.set('view engine','ejs')
 
 app.get('/',(req,res)=>{
     res.json({code:0,message:'success'})
+    
+    //views here 
+    //
+    //return res.status(200).render('views-here')
 })
 
 app.use('/products',pRouter)

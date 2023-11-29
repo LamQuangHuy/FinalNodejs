@@ -13,6 +13,10 @@ const UserModel = require('../models/userModel')
 
 
 Router.get('/',(req,res)=>{
+
+    //views here 
+    //
+    //return res.status('-code-').render('views-here')
     res.json({code:0,
             message:'get method of User router'})
 })
@@ -34,6 +38,10 @@ Router.post('/login', loginValidator,(req,res)=>{
         }).then(passwordMatch=>{
             if (!passwordMatch)
             {
+
+                //views here 
+                //
+                //return res.status('-code-').render('views-here')
                 return res.status(401).json({code:2,message:"Login failed"})
 
             }
@@ -58,6 +66,9 @@ Router.post('/login', loginValidator,(req,res)=>{
 
 
         }).catch(e=>{
+            //views here 
+            //
+            //return res.status('-code-').render('views-here')
             return res.status(401).json({code:2,message:"Login failed: "+e.message})
         })
     }
@@ -70,6 +81,9 @@ Router.post('/login', loginValidator,(req,res)=>{
             msg = messages[m]
             break;
         }
+        //views here 
+        //
+        //return res.status('-code-').render('views-here')
         res.json({code:1,message:msg})
     }
     //res.json({code:0,message:'login account'})
@@ -97,8 +111,16 @@ Router.post('/register',registerValidator,(req,res)=>{
         return user.save();
 
         }).then(()=>{
+
+            //views here 
+            //
+            //return res.status('-code-').render('views-here')
             return res.json({code:0,message:"User Saved", data:user})
         }).catch(e=>{
+
+            //views here 
+            //
+            //return res.status('-code-').render('views-here')
             return res.json({code:2,message:e.message})
         })
         //return res.json({code:0,message:'register account successfully'})
@@ -112,6 +134,9 @@ Router.post('/register',registerValidator,(req,res)=>{
             msg = messages[m]
             break;
         }
+        //views here 
+        //
+        //return res.status('-code-').render('views-here')
         res.json({code:1,message:msg})
     }
     

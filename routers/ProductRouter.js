@@ -10,6 +10,9 @@ Router.get('/',(req,res)=>{
     .then(products=>{
         res.json({code:0,message:'get method of Product router',data:products})
 
+        //views here 
+        //
+        //return res.status(200).render('views-here')
     })
 
 })
@@ -25,9 +28,19 @@ Router.post('/',addProductValidator,(req,res)=>{
 
         product.save()
         .then(()=>{
+
+            //views here 
+            //
+            //return res.status(200).render('views-here')
+
             return res.json({code:0,message:'Add product successfully',data:product})
         })
         .catch(e=>{
+
+            //views here 
+            //
+            //return res.status(200).render('views-here')
+
             return res.json({code:2,message:e.message})
         })
     }
@@ -40,6 +53,10 @@ Router.post('/',addProductValidator,(req,res)=>{
             msg = messages[m]
             break;
         }
+
+        //views here 
+        //
+        //return res.status(200).render('views-here')
         res.json({code:1,message:msg})
     }
 })
