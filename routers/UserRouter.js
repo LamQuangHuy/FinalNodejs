@@ -5,6 +5,7 @@ const {validationResult} = require('express-validator')
 
 const registerValidator = require('./Validator/registerValidator')
 const loginValidator = require('./Validator/loginValidator')
+const nodemailer = require('nodemailer')
 
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
