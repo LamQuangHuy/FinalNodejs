@@ -19,7 +19,13 @@ app.get('/',(req,res)=>{
 app.use('/products',pRouter)
 app.use('/orders',oRouter)
 app.use('/users',uRouter)
-
+app.all('*',(req,res)=>{
+    //views here 
+    //
+    //return res.status('-code-').render('views-here')
+    res.json({code:404,
+        message:'page not supported'})
+})
 
 const PORT = process.env.PORT || 8080
 app.listen(PORT,()=>console.log('http://localhost:'+PORT))

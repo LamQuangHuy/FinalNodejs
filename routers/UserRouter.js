@@ -143,4 +143,12 @@ Router.post('/register',registerValidator,(req,res)=>{
     
 })
 
+Router.all('*',(req,res)=>{
+    //views here 
+    //
+    //return res.status('-code-').render('views-here')
+    res.json({code:404,
+        message:'page not supported'})
+})
+
 module.exports = Router
