@@ -1,5 +1,14 @@
 const express = require('express')
 const Router = express.Router()
+const LoginChecker = require('../auth/loginAuth')
+
+const rateLimit = require('express-rate-limit')
+
+const limiter = rateLimit({
+    windowMs: 10*1000,
+    max: 5,
+    message: 'Request too rapidly, please try later'
+})
 
 Router.get('/',(req,res)=>{
     //views here 
@@ -9,7 +18,7 @@ Router.get('/',(req,res)=>{
             message:'get method of Order router'})
 })
 
-Router.post('/',(req,res)=>{
+Router.post('/',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')
@@ -17,7 +26,7 @@ Router.post('/',(req,res)=>{
             message:'post method of Order router'})
 })
 
-Router.put('/',(req,res)=>{
+Router.put('/',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')
@@ -25,7 +34,7 @@ Router.put('/',(req,res)=>{
             message:'put method of Order router'})
 })
 
-Router.delete('/',(req,res)=>{
+Router.delete('/',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')
@@ -33,7 +42,7 @@ Router.delete('/',(req,res)=>{
             message:'delete method of Order router'})
 })
 
-Router.patch('/',(req,res)=>{
+Router.patch('/',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')

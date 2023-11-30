@@ -1,9 +1,17 @@
 const express = require('express')
 const Router = express.Router()
+const LoginChecker = require('../auth/loginAuth')
 
 const addProductValidator = require('./Validator/addProductValidator')
 const product = require('../models/productModel')
 const {validationResult} = require('express-validator')
+const rateLimit = require('express-rate-limit')
+
+const limiter = rateLimit({
+    windowMs: 10*1000,
+    max: 5,
+    message: 'Request too rapidly, please try later'
+})
 
 Router.get('/',(req,res)=>{
     Product.find().select('name price desc -_id')
@@ -17,7 +25,7 @@ Router.get('/',(req,res)=>{
 
 })
 
-Router.post('/',addProductValidator,(req,res)=>{
+Router.post('/',LoginChecker,limiter,addProductValidator,(req,res)=>{
     let result = validationResult(req)
     if (result.errors.length===0)
     {
@@ -61,7 +69,7 @@ Router.post('/',addProductValidator,(req,res)=>{
     }
 })
 
-Router.put('/',(req,res)=>{
+Router.put('/:id',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')
@@ -69,7 +77,7 @@ Router.put('/',(req,res)=>{
             message:'put method of Order router'})
 })
 
-Router.delete('/',(req,res)=>{
+Router.delete('/:id',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')
@@ -77,7 +85,7 @@ Router.delete('/',(req,res)=>{
             message:'delete method of Order router'})
 })
 
-Router.patch('/',(req,res)=>{
+Router.patch('/:id',LoginChecker,limiter,(req,res)=>{
     //views here 
     //
     //return res.status('-code-').render('views-here')
