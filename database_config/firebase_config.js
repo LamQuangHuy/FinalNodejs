@@ -1,11 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
 const firebase = require('firebase/app');
-const analytics = require('firebase/analytics')
+require('firebase/analytics');
 require('firebase/database');
-require('dotenv').config()
-
+require('dotenv').config();
 
 const firebaseConfig = {
     apiKey: process.env.MFWP_FIREBASECONFIG_apiKey,
@@ -17,6 +13,8 @@ const firebaseConfig = {
     measurementId: process.env.MFWP_FIREBASECONFIG_measurementId,
 };
 
-const init = firebase.initializeApp(firebaseConfig);
-const app = analytics.getAnalytics(init)
-module.exports = app;
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const analytics = firebase.analytics();
+
+module.exports = { firebaseApp, analytics };
