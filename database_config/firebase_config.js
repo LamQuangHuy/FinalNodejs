@@ -3,6 +3,7 @@ require('firebase/analytics');
 require('firebase/database');
 require('dotenv').config();
 
+//client side
 const firebaseConfig = {
     apiKey: process.env.MFWP_FIREBASECONFIG_apiKey,
     authDomain: process.env.MFWP_FIREBASECONFIG_authDomain,
@@ -20,6 +21,7 @@ const analytics = firebase.analytics();
 const admin = require('firebase-admin');
 const serviceAccount = require('../database_config/final-nodejsweb-firebase-adminsdk-jwqh5-1ad389c7a3.json');
 
+//server side only
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: process.env.URL_FIREBASE,
