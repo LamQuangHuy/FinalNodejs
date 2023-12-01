@@ -3,11 +3,13 @@ const express = require('express')
 const pRouter = require('./routers/ProductRouter')
 const oRouter = require('./routers/OrderRouter')
 const uRouter = require('./routers/UserRouter') 
-
+const mongoose = require('mongoose')
+const cors = require('cors')
 
 const app = express()
 
 app.set('view engine','ejs')
+app.use(cors())
 
 app.get('/',(req,res)=>{
     res.json({code:0,message:'success'})
@@ -28,5 +30,11 @@ app.all('*',(req,res)=>{
         message:'page not supported'})
 })
 
-const PORT = process.env.PORT || 8080
-app.listen(PORT,()=>console.log('http://localhost:'+PORT))
+
+mongoose.connect('mongodb://localhost:27017',{
+    //useNewUrlParser:true,
+    //useUnifiedTopology: true
+}).then(()=>{
+    const PORT = process.env.PORT || 8080
+    app.listen(PORT,()=>console.log('http://localhost:'+PORT))
+}).catch(e=>console.log('error: '+e.message))
