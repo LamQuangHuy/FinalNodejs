@@ -1,16 +1,22 @@
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
 const firebase = require('firebase/app');
+const analytics = require('firebase/analytics')
 require('firebase/database');
 require('dotenv').config()
 
+
 const firebaseConfig = {
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'YOUR_AUTH_DOMAIN',
-    projectId: 'YOUR_PROJECT_ID',
-    storageBucket: 'YOUR_STORAGE_BUCKET',
-    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-    appId: 'YOUR_APP_ID',
+    apiKey: process.env.MFWP_FIREBASECONFIG_apiKey,
+    authDomain: process.env.MFWP_FIREBASECONFIG_authDomain,
+    projectId: process.env.MFWP_FIREBASECONFIG_projectId,
+    storageBucket: process.env.MFWP_FIREBASECONFIG_storageBucket,
+    messagingSenderId: process.env.MFWP_FIREBASECONFIG_messagingSenderId,
+    appId: process.env.MFWP_FIREBASECONFIG_appId,
+    measurementId: process.env.MFWP_FIREBASECONFIG_measurementId,
 };
 
-firebase.initializeApp(firebaseConfig);
-
-module.exports = firebase;
+const init = firebase.initializeApp(firebaseConfig);
+const app = analytics.getAnalytics(init)
+module.exports = app;
