@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const UserModel = require('../models/userModel')
+const {admin} = require('../database_config/firebase_config');
 
 
 Router.get('/',(req,res)=>{
@@ -22,127 +23,102 @@ Router.get('/',(req,res)=>{
             message:'get method of User router'})
 })
 
-Router.post('/login', loginValidator,(req,res)=>{
-    let result = validationResult(req)
-    if (result.errors.length===0)
-    {
-        let {email, password} = req.body
-        let account = undefined
+Router.post('/login',loginValidator, (req, res) => {
+    let result = validationResult(req);
+    if (result.errors.length === 0) {
+        let { email, password } = req.body;
+        admin
+            .auth()
+            .signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                const token = jwt.sign(
+                    {
+                        uid: user.uid,
+                        email: user.email,
+                    },
+                    process.env.JWT_SECRET, 
+                    { expiresIn: 60 * 60 }
+                );
 
-        UserModel.findOne({email:email})
-        .then(acc =>{
-            if (!acc){
-                throw new Error('Email is not existed')
-            }
-            account=acc
-            bcrypt.compare(password,acc.password)
-        }).then(passwordMatch=>{
-            if (!passwordMatch)
-            {
+                //views here 
+                //
+                //return res.status('-code-').render('views-here')        
+                res.json({
+                    code: 0,
+                    message: 'Login successfully',
+                    token: token,
+                });
+            })
+            .catch((error) => {
 
                 //views here 
                 //
                 //return res.status('-code-').render('views-here')
-                return res.status(401).json({code:2,message:"Login failed"})
-
-            }
-            
-            
-            //return res.status(200).json({code:0,message:"Login successfully"})
-            const {JWT_SECRET} = process.emitWarning
-            
-            jwt.sign({
-                email:account.email,
-                fullname:account.fullname
-            },JWT_SECRET,{
-                expiresIn : 60*60
-            },(err,token)=>{
-                if (err) throw err
-                return res.json({
-                    code:0,
-                    message:'login successfully',
-                    token:token
-                })
-            })
-
-
-        }).catch(e=>{
-            //views here 
-            //
-            //return res.status('-code-').render('views-here')
-            return res.status(401).json({code:2,message:"Login failed: "+e.message})
-        })
-    }
-    else
-    {
-        let messages = result.mapped()
-        let msg = ''
-        for (m in messages)
-        {
-            msg = messages[m]
+                res.status(401).json({
+                    code: 2,
+                    message: 'Login failed: ' + error.message,
+                });
+            });
+    } else {
+        let messages = result.mapped();
+        let msg = '';
+        for (m in messages) {
+            msg = messages[m];
             break;
         }
         //views here 
         //
         //return res.status('-code-').render('views-here')
-        res.json({code:1,message:msg})
+        res.json({ code: 1, message: msg });
     }
-    //res.json({code:0,message:'login account'})
-})
+});
 
-Router.post('/register',registerValidator,(req,res)=>{
-    
-    let result = validationResult(req)
-    if (result.errors.length===0)
-    {
-        let {email, password, username} = req.body
-        UserModel.findOne({email:email})
-        .then(acc =>{
-            if (acc){
-                throw new Error('this account is existed (email)')
-            }
-        })
-        .then(()=>bcrypt.hash(password, 10))
-        .then(hashed =>{
-            let user = new UserModel({
-                email:email,
-                password:password,
-                username:username
+Router.post('/register',registerValidator, (req, res) => {
+    let result = validationResult(req);
+    if (result.errors.length === 0) {
+        let { email, password, username } = req.body;
+        admin
+            .auth()
+            .createUser({
+                email,
+                password,
             })
-        return user.save();
+            .then((userRecord) => {
+                const usersRef = admin.database().ref('users');
+                usersRef.child(userRecord.uid).set({
+                    email,
+                    username,
+                });
+                //views here 
+                //
+                //return res.status('-code-').render('views-here')
 
-        }).then(()=>{
-
-            //views here 
-            //
-            //return res.status('-code-').render('views-here')
-            return res.json({code:0,message:"User Saved", data:user})
-        }).catch(e=>{
-
-            //views here 
-            //
-            //return res.status('-code-').render('views-here')
-            return res.json({code:2,message:e.message})
-        })
-        //return res.json({code:0,message:'register account successfully'})
-    }
-    else
-    {
-        let messages = result.mapped()
-        let msg = ''
-        for (m in messages)
-        {
-            msg = messages[m]
+                res.json({
+                    code: 0,
+                    message: 'User saved',
+                    data: { email, username },
+                });
+            })
+            .catch((error) => {
+                //views here 
+                //
+                //return res.status('-code-').render('views-here')
+                res.json({ code: 2, message: error.message });
+            });
+    } else {
+        let messages = result.mapped();
+        let msg = '';
+        for (m in messages) {
+            msg = messages[m];
             break;
         }
         //views here 
         //
         //return res.status('-code-').render('views-here')
-        res.json({code:1,message:msg})
+        res.json({ code: 1, message: msg });
     }
-    
-    
-})
+});
 
 Router.all('*',(req,res)=>{
     //views here 
@@ -153,3 +129,6 @@ Router.all('*',(req,res)=>{
 })
 
 module.exports = Router
+
+
+

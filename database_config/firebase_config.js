@@ -17,4 +17,12 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 
-module.exports = { firebaseApp, analytics };
+const admin = require('firebase-admin');
+const serviceAccount = require('../database_config/final-nodejsweb-firebase-adminsdk-jwqh5-1ad389c7a3.json');
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: process.env.URL_FIREBASE,
+});
+
+module.exports = { firebaseApp, analytics, admin };
