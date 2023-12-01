@@ -1,12 +1,16 @@
-const mgoose = require('mongoose')
-const Schema = mgoose.Schema
+const firebaseModule = require('../database_config/firebase_config');
+const { firebaseApp, analytics } = firebaseModule;
 
-const ProductSchema = new Schema({
-    name:{
-        type:String
-    },
-    price:Number,
-    desc:String
-})
+const db = firebaseApp.database();
+const productsRef = db.ref('products');
 
-module.exports = mgoose.model('Product',ProductSchema)
+const createProduct = async (name, price, desc) => {
+    const newProductRef = productsRef.push();
+    await newProductRef.set({
+        name,
+        price,
+        desc,
+    });
+};
+
+module.exports = { createProduct };

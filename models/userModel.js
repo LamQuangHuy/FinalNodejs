@@ -1,13 +1,16 @@
-const mgoose = require('mongoose')
-const Schema = mgoose.Schema
+const firebaseModule = require('../database_config/firebase_config');
+const { firebaseApp, analytics } = firebaseModule;
 
-const AccSchema = new Schema({
-    email:{
-        type:String,
-        unique:true
-    },
-    password:String,
-    username:String
-})
+const db = firebaseApp.database();
+const usersRef = db.ref('users');
 
-module.exports = mgoose.model('user',AccSchema)
+const createUser = async (email, password, username) => {
+        const newUserRef = usersRef.push();
+        await newUserRef.set({
+            email,
+            password,
+            username,
+        });
+};
+
+module.exports = { createUser };
