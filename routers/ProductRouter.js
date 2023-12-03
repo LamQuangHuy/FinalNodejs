@@ -154,30 +154,36 @@ Router.put('/:id',/*LoginChecker,*/limiter,async(req,res)=>{
 //delete product by id
 Router.delete('/:id',/*LoginChecker,*/limiter,async(req,res)=>{
     try {
-        const productId = req.params.id;
+      const productId = req.params.id;
     
-        // Check if the product with the given ID exists
-        const product = await Product.findById(productId);
-    
-        if (!product) {
-          // Product not found
-          return res.status(404).json({ code: 1, message: 'Product not found' });
-        }
-    
-        // Product found, proceed with deletion
-        await Product.findByIdAndDelete(productId);
-    
-        //views here
-        //
-        //return res.status('-code-').render('views-here')
-        return res.json({ code: 0, message: 'Product deleted successfully' });
-      } catch (error) {
-        // Handle errors
-        //views here
-        //
-        //return res.status('-code-').render('views-here')
-        return res.status(500).json({ code: 2, message: error.message });
+      // Check if the product with the given ID exists
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        // Product not found
+        return res.status(404).json({ code: 1, message: 'Product not found' });
       }
+        
+      const inAnyOrder = await Order.find({ 'products.productId': productId });
+
+      if (inAnyOrder.length > 0) {
+        return res.status(400).json({ code: 2, message: 'Product is existed in some orders, cannot be deleted' });
+      }
+
+      // Product found, proceed with deletion
+      await Product.findByIdAndDelete(productId);
+    
+      //views here
+      //
+      //return res.status('-code-').render('views-here')
+      return res.json({ code: 0, message: 'Product deleted successfully' });
+    } catch (error) {
+      // Handle errors
+      //views here
+      //
+      //return res.status('-code-').render('views-here')
+      return res.status(500).json({ code: 2, message: error.message });
+    } 
 })
 
 //update quantity product's attributes by id
