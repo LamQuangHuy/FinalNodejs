@@ -29,39 +29,34 @@ Router.post('/login',loginValidator, (req, res) => {
     {
         let {email, password} = req.body
         let account = undefined
-
         UserModel.findOne({email:email})
         .then(acc =>{
             if (!acc){
                 throw new Error('Email is not existed')
             }
-            account=acc
-            bcrypt.compare(password,acc.password)
+            account = acc
+            return bcrypt.compare(password,acc.password)
         }).then(passwordMatch=>{
             if (!passwordMatch)
             {
-                return res.status(401).json({code:2,message:"Login failed"})
-
+                return res.status(401).json({code:3,message:"Login failed, email or password is not correct"});
             }
-            
-            
-            //return res.status(200).json({code:0,message:"Login successfully"})
-            const {JWT_SECRET} = process.emitWarning
-            
+            const {JWT_SECRET} = process.env
+            // return res.status(200).json({code:0,message:"Login successfully"});
             jwt.sign({
-                email:account.email,
-                fullname:account.fullname
-            },JWT_SECRET,{
-                expiresIn : 60*60
-            },(err,token)=>{
+                email: account.email,
+                fullname: account.fullname
+            }, JWT_SECRET,{
+                expiresIn: '1h'
+            }, (err,token) => {
                 if (err) throw err
                 return res.json({
-                    code:0,
-                    message:'login successfully',
-                    token:token
+                    code: 0,
+                    message: "Login Successfully",
+                    token: token
+
                 })
             })
-
 
         }).catch(e=>{
             return res.status(401).json({code:2,message:"Login failed: "+e.message})
@@ -80,7 +75,7 @@ Router.post('/login',loginValidator, (req, res) => {
     }
 });
 
-Router.post('/register',registerValidator, (req, res) => {
+Router.post('/register', registerValidator, (req, res) => {
     let result = validationResult(req)
     if (result.errors.length===0)
     {
@@ -88,20 +83,20 @@ Router.post('/register',registerValidator, (req, res) => {
         UserModel.findOne({email:email})
         .then(acc =>{
             if (acc){
-                throw new Error('this account is existed (email)')
+                throw new Error('this account is existed')
             }
         })
         .then(()=>bcrypt.hash(password, 10))
         .then(hashed =>{
             let user = new UserModel({
                 email:email,
-                password:password,
+                password:hashed,
                 username:username
             })
         return user.save();
 
         }).then(()=>{
-            return res.json({code:0,message:"User Saved", data:user})
+            return res.json({code:0,message:"User Saved"})
         }).catch(e=>{
             return res.json({code:2,message:e.message})
         })
@@ -110,7 +105,7 @@ Router.post('/register',registerValidator, (req, res) => {
         let messages = result.mapped();
         let msg = '';
         for (m in messages) {
-            msg = messages[m];
+            msg = messages[m].msg;
             break;
         }
         //views here 

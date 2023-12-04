@@ -9,6 +9,7 @@ const cors = require('cors')
 const app = express()
 
 app.set('view engine','ejs')
+app.use(express.json())
 app.use(cors())
 
 app.get('/',(req,res)=>{
@@ -31,9 +32,9 @@ app.all('*',(req,res)=>{
 })
 
 
-mongoose.connect('mongodb://localhost:27017',{
-    //useNewUrlParser:true,
-    //useUnifiedTopology: true
+mongoose.connect('mongodb://localhost:27017/test',{
+    useNewUrlParser:true,
+    useUnifiedTopology: true
 }).then(()=>{
     const PORT = process.env.PORT || 8080
     app.listen(PORT,()=>console.log('http://localhost:'+PORT))
