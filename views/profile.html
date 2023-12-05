@@ -12,7 +12,10 @@
         }
 
         .img-account-profile {
-            height: 10rem;
+            width: 10rem; /* Set the desired width */
+            height: 10rem; /* Set the desired height */
+            border-radius: 50%;
+            object-fit: cover; /* Maintain aspect ratio and cover the entire container */
         }
 
         .rounded-circle {
@@ -84,7 +87,7 @@
                         <img class="img-account-profile rounded-circle mb-2" id="profileImage" src="/views/images/user.jpg" alt>
                         <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                         <button class="btn btn-primary" type="button" onclick="uploadImage()">Upload new image</button>
-                        <button class="btn btn-primary mt-2" type="button" onclick="redirectToChangePassword()">Change Password</button>
+                        <button class="btn btn-primary" type="button" onclick="redirectToChangePassword()">Change Password</button>
                     </div>
                 </div>
             </div>
@@ -104,10 +107,6 @@
                                 </div>
                             </div>
                             <div class="row gx-3 mb-3">
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                                    <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="name@example.com">
-                                </div>
                                 <button class="btn btn-primary" type="button" onclick="saveChanges()">Save changes</button>
                             </div>
                         </form>

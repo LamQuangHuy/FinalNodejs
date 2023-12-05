@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            margin-top: 20px;
+            background-color: #f2f6fc;
+            color: #69707a;
+        }
+
+        .img-account-profile {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .rounded-circle {
+            border-radius: 50% !important;
+        }
+
+        .card {
+            box-shadow: 0 0.15rem 1.75rem 0 rgb(33 40 50 / 15%);
+        }
+
+        .card .card-header {
+            font-weight: 500;
+        }
+
+        .card-header:first-child {
+            border-radius: 0.35rem 0.35rem 0 0;
+        }
+
+        .card-header {
+            padding: 1rem 1.35rem;
+            margin-bottom: 0;
+            background-color: rgba(33, 40, 50, 0.03);
+            border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+        }
+
+        .form-control, .dataTable-input {
+            display: block;
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1;
+            color: #69707a;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #c5ccd6;
+            border-radius: 0.35rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .nav-borders .nav-link.active {
+            color: #0061f2;
+            border-bottom-color: #0061f2;
+        }
+
+        .nav-borders .nav-link {
+            color: #69707a;
+            border-bottom-width: 0.125rem;
+            border-bottom-style: solid;
+            border-bottom-color: transparent;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-xl px-4 mt-4">
+        <hr class="mt-0 mb-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">Employee List</div>
+                    <div class="card-body">
+                        <!-- Employee List Table -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Profile</th>
+                                    <th>Full Name</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Employee rows will be dynamically added here using JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="text/javascript">
+        // Sample employee data (replace this with your actual data)
+        var employeeData = [
+            { id: 1, name: 'John Doe', status: 'Active' },
+            { id: 2, name: 'Jane Smith', status: 'Inactive' },
+            // Add more employees as needed
+        ];
+
+        // Function to generate HTML for employee rows
+        function generateEmployeeRows() {
+            var tbody = document.querySelector('tbody');
+
+            employeeData.forEach(function (employee) {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img class="img-account-profile rounded-circle" src="/views/images/user.jpg" alt="Profile Image"></td>
+                    <td>${employee.name}</td>
+                    <td>${employee.status}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="sendLoginEmail(${employee.id})">Send Login Email</button>
+                        <button class="btn btn-warning btn-sm" onclick="toggleAccountStatus(${employee.id})">Toggle Account</button>
+                        <button class="btn btn-info btn-sm" onclick="viewSalesInfo(${employee.id})">View Infomation</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Function to send login email
+        function sendLoginEmail(employeeId) {
+            // Implement logic to send login email for the given employee
+            alert(`Login email sent for Employee ID: ${employeeId}`);
+        }
+
+        // Function to toggle account status
+        function toggleAccountStatus(employeeId) {
+            // Implement logic to toggle the account status for the given employee
+            alert(`Account status toggled for Employee ID: ${employeeId}`);
+        }
+
+        // Function to view sales information
+        function viewSalesInfo(employeeId) {
+            // Implement logic to view sales information for the given employee
+            alert(`Viewing sales information for Employee ID: ${employeeId}`);
+        }
+
+        // Initial function call to generate employee rows
+        generateEmployeeRows();
+    </script>
+</body>
+</html>
