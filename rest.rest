@@ -1,0 +1,11 @@
+###
+POST http://localhost:8080/products/
+content-type: application/json
+   
+{
+    "name":"Samsung Galaxy Grand Prime",
+    "import_price":"99",
+    "retail_price":"199",
+    "category":"Phone",
+    "creation_date":"2023-10-01"
+}
