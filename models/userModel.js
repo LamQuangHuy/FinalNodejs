@@ -6,8 +6,10 @@ const AccSchema = new Schema({
         type:String,
         unique:true
     },
+    username:String,
     password:String,
-    username:String
+    role: String
 })
+
 
 module.exports = mgoose.model('user',AccSchema)

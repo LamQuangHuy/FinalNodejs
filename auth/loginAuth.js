@@ -21,7 +21,7 @@ module.exports = (req,res,next)=>{
 
     
 
-    jwt.verify(token,JWT_SECRET,(e,data)=>{
+    jwt.verify(token,JWT_SECRET,(err,data)=>{
         if (err)
         {
             return res.status(401)

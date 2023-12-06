@@ -1,16 +1,18 @@
 const express = require('express')
 const Router = express.Router()
-
+require('dotenv').config();
 const {validationResult} = require('express-validator')
-
+const roleAuth = require('../auth/roleAuth')
 const registerValidator = require('./Validator/registerValidator')
 const loginValidator = require('./Validator/loginValidator')
 const nodemailer = require('nodemailer')
-
+// const adminValidator = require('./Validator/adminValidator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-
+// const adminModel = require('../models/adminModels')
 const UserModel = require('../models/userModel')
+const { Schema } = require('mongoose');
+const loginAuth = require('../auth/loginAuth');
 
 
 
@@ -23,29 +25,60 @@ Router.get('/',(req,res)=>{
             message:'get method of User router'})
 })
 
+// Router.post('/admin',adminValidator, (req,res) => {
+//     let result = validationResult(req)
+//     if(result.errors.length === 0){
+//         let{username, password} = req.body
+//         let account = undefined
+//         adminModel.findOne({username:username})
+//         .then(acc => {
+//             if(!acc){
+//                 res.json({code:1, message:'Invalid username or password'})
+//             }
+//             account = acc
+//             return bcrypt.compare(password, 'admin')
+//         })
+//     }
+//     else{
+//         let messages = result.mapped();
+//         let msg = '';
+//         for (m in messages) {
+//             msg = messages[m].msg;
+//             break;
+//         }
+//         //views here 
+//         //
+//         //return res.status('-code-').render('views-here')
+//         res.json({ code: 1, message: msg });
+//     }
+// })
+
+
 Router.post('/login',loginValidator, (req, res) => {
     let result = validationResult(req)
     if (result.errors.length===0)
     {
-        let {email, password} = req.body
+        let {username, password} = req.body
         let account = undefined
-        UserModel.findOne({email:email})
+        UserModel.findOne({username:username})
         .then(acc =>{
             if (!acc){
-                throw new Error('Email is not existed')
+                throw new Error('Username is not existed')
             }
             account = acc
             return bcrypt.compare(password,acc.password)
         }).then(passwordMatch=>{
             if (!passwordMatch)
             {
-                return res.status(401).json({code:3,message:"Login failed, email or password is not correct"});
+                return res.status(401).json({code:3,message:"Login failed, username or password is not correct"});
             }
+
             const {JWT_SECRET} = process.env
-            // return res.status(200).json({code:0,message:"Login successfully"});
+            // console.log(JWT_SECRET)
+            
             jwt.sign({
-                email: account.email,
-                fullname: account.fullname
+                username: account.username,
+                role: account.role
             }, JWT_SECRET,{
                 expiresIn: '1h'
             }, (err,token) => {
@@ -75,12 +108,12 @@ Router.post('/login',loginValidator, (req, res) => {
     }
 });
 
-Router.post('/register', registerValidator, (req, res) => {
+Router.post('/register',roleAuth, loginAuth, registerValidator, (req, res) => {
     let result = validationResult(req)
     if (result.errors.length===0)
     {
-        let {email, password, username} = req.body
-        UserModel.findOne({email:email})
+        let {email,password, username, role} = req.body
+        UserModel.findOne({username:username})
         .then(acc =>{
             if (acc){
                 throw new Error('this account is existed')
@@ -89,9 +122,10 @@ Router.post('/register', registerValidator, (req, res) => {
         .then(()=>bcrypt.hash(password, 10))
         .then(hashed =>{
             let user = new UserModel({
-                email:email,
+                email: email,
+                username:username,
                 password:hashed,
-                username:username
+                role: role
             })
         return user.save();
 
