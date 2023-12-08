@@ -108,7 +108,7 @@ Router.post('/login',loginValidator, (req, res) => {
     }
 });
 
-Router.post('/register',roleAuth, loginAuth, registerValidator, (req, res) => {
+Router.post('/register', loginAuth, roleAuth, registerValidator, (req, res) => {
     let result = validationResult(req)
     if (result.errors.length===0)
     {

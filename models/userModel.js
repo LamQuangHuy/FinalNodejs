@@ -8,7 +8,8 @@ const AccSchema = new Schema({
     },
     username:String,
     password:String,
-    role: String
+    role: String,
+    fullname: String
 })
 
 
