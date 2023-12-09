@@ -5,6 +5,7 @@ const cors = require('cors')
 const flash = require('express-flash')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+const Product = require('./models/productModel')
 
 const app = express()
 
@@ -17,13 +18,18 @@ app.use(cors())
 app.use(cookieParser('12345'))
 app.use(session({cookie: { maxAge: 60000 }}))
 app.use(flash())
+app.use(express.static('public'))
 
 app.get('/',(req,res)=>{
-    res.json({code:0,message:'success'})
+   
+    res.render('index')
+})
+app.get('/products',async (req,res)=>{
+    const products = await Product.find();
+    console.log(products)
     
-    //views here 
-    //
-    //return res.status(200).render('views-here')
+   
+    res.render('products',{products:products});
 })
 
 // [route]
@@ -32,6 +38,7 @@ app.get('/',(req,res)=>{
 // app.use('/orders',oRouter)
 // app.use('/users',uRouter)
 route(app)
+
 
 app.all('*',(req,res)=>{
     //views here 
@@ -42,7 +49,7 @@ app.all('*',(req,res)=>{
 })
 
 
-mongoose.connect('mongodb+srv://thanhbinh:thanhbinh2003@finalnodejs.5v0yiuo.mongodb.net/?retryWrites=true&w=majority',{
+mongoose.connect('mongodb://localhost:27017',{
     //useNewUrlParser:true,
     //useUnifiedTopology: true
 }).then(()=>{
